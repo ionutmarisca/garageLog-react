@@ -38,7 +38,7 @@ export class MainApp extends Component<{}> {
 
     constructor(props) {
         super(props);
-        this.state = {userName: '', description: ''};
+        this.state = {feedback: ''};
 
         cars = [
             {
@@ -96,21 +96,13 @@ export class MainApp extends Component<{}> {
                     <View style={styles.oneLineTextContainer}>
                         <TextInput
                             style={styles.textBoxSmall}
-                            placeholder="Name"
-                            onChangeText={(text) => this.setState({userName: text})}
-                        />
-                    </View>
-
-                    <View style={styles.oneLineTextContainer}>
-                        <TextInput
-                            style={styles.textBoxSmall}
-                            placeholder="Feedback"
-                            onChangeText={(text) => this.setState({description: text})}
+                            placeholder="Feedback..."
+                            onChangeText={(text) => this.setState({feedback: text})}
                         />
                     </View>
 
                     <Button
-                        onPress={() => Communications.email(['ionutmarisca@gmail.com'], null, null, this.state.userName, this.state.description)}
+                        onPress={() => Communications.email(['ionutmarisca@gmail.com'], null, null, null, this.state.feedback)}
                         title="Send Mail"
                         color='#476dc5'
                         style={styles.sendBtn}>
