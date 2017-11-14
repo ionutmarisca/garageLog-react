@@ -3,6 +3,7 @@ import {Button, StyleSheet, TextInput, View, ScrollView, Image} from "react-nati
 
 export default class CarDetails extends React.Component {
     render() {
+        const {goBack} = this.props.navigation;
         const {params} = this.props.navigation.state;
         return (
             <ScrollView>
