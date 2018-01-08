@@ -2,37 +2,39 @@ import React from 'react'
 import {Button, StyleSheet, TextInput, View, ScrollView, Image} from "react-native";
 import {firebaseApp} from './App'
 
-export class CarDetails extends React.Component {
-    updateCar(key) {
+export class AddCar extends React.Component {
+    save() {
         const items = firebaseApp.database().ref().child('cars');
-
-        if(this.state.brandNameChange)
-            items.child(key).child("car").child("brandName").set(this.state.brandName);
-        if(this.state.modelNameChange)
-            items.child(key).child("car").child("modelName").set(this.state.modelName);
-        if(this.state.engineSizeChange)
-            items.child(key).child("car").child("engineSize").set(this.state.engineSize);
+        items.push({
+            car: {
+                brandName: this.state.brandName,
+                modelName: this.state.modelName,
+                engineSize: this.state.engineSize,
+                imageResource: require('./img/audi.png')
+            }
+        });
     }
 
     render() {
         const {goBack} = this.props.navigation;
         const {params} = this.props.navigation.state;
-
         return (
             <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.inputContainer}>
-                        <TextInput style={styles.carTitle} onChangeText={(text) => {this.setState({brandName: text}); this.setState({brandNameChange: true});}}>{params.car.brandName} </TextInput>
-                        <TextInput style={{width: 150, textAlign: 'center'}} onChangeText={(text) => {this.setState({modelName: text}); this.setState({modelNameChange: true});}}> {params.car.modelName} </TextInput>
-                        <Image style={styles.logoImage} source={params.car.imageResource}/>
-                        <TextInput
-                            style={{textAlign: 'center', paddingBottom: 15}} onChangeText={(text) => {this.setState({engineSize: text}); this.setState({engineSizeChange: true});}}> {params.car.engineSize} </TextInput>
+                        <TextInput style={styles.carTitle} placeholder="Brand name..."
+                                   onChangeText={(text) => this.setState({brandName: text})}/>
+                        <TextInput placeholder="Model name..."
+                                   onChangeText={(text) => this.setState({modelName: text})}/>
+                        <TextInput placeholder="Image URL..." onChangeText={(text) => this.setState({imageUrl: text})}/>
+                        <TextInput style={{textAlign: 'center', paddingBottom: 15}} placeholder="Engine size..."
+                                   onChangeText={(text) => this.setState({engineSize: text})}/>
                     </View>
                     <Button onPress={() => {
-                        this.updateCar(params.key);
+                        this.save();
                         goBack();
                     }
-                    } title="Save changes" style={styles.saveButton}/>
+                    } title="Add car" style={styles.saveButton}/>
                 </View>
             </ScrollView>
         );
