@@ -22,6 +22,7 @@ import {
 
 } from 'react-native';
 import {AddCar} from "./AddCar";
+import Login from "./Login";
 
 const firebase = require('firebase');
 
@@ -44,7 +45,8 @@ export class MainApp extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {feedback: '', carlist: [], loading: true};
+        this.unsubscriber = null;
+        this.state = {feedback: '', carlist: [], loading: true, user: null};
 
         cars = [
             {car: {
@@ -94,8 +96,22 @@ export class MainApp extends Component {
         });
     }
 
+    /**
+     * Listen for any auth state changes and update component state
+     */
+    componentDidMount() {
+        this.unsubscriber = firebase.auth().onAuthStateChanged((myUser) => {
+            if (myUser) {
+                this.setState({user: myUser});
+            }
+        });
+    }
+
     componentWillMount(){
         this.getItems(this.items);
+        if (this.unsubscriber) {
+            this.unsubscriber();
+        }
     }
 
     getReference() {
@@ -121,6 +137,9 @@ export class MainApp extends Component {
 
     render() {
         const {navigate} = this.props.navigation;
+        if (!this.state.user) {
+            return <Login/>;
+        }
         return (
             <View>
                 <View>
@@ -181,7 +200,8 @@ export class MainApp extends Component {
 const SimpleNavi = StackNavigator({
     Home: {screen: MainApp},
     CarDetails: {screen: CarDetails},
-    AddCar: {screen: AddCar}
+    AddCar: {screen: AddCar},
+    Login: {screen: Login}
 });
 
 export default class App extends Component {
