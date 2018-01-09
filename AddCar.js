@@ -19,24 +19,24 @@ export class AddCar extends React.Component {
         const {goBack} = this.props.navigation;
         const {params} = this.props.navigation.state;
         return (
-            <ScrollView>
-                <View style={styles.container}>
-                    <View style={styles.inputContainer}>
-                        <TextInput style={styles.carTitle} placeholder="Brand name..."
-                                   onChangeText={(text) => this.setState({brandName: text})}/>
-                        <TextInput placeholder="Model name..."
-                                   onChangeText={(text) => this.setState({modelName: text})}/>
-                        <TextInput placeholder="Image URL..." onChangeText={(text) => this.setState({imageUrl: text})}/>
-                        <TextInput style={{textAlign: 'center', paddingBottom: 15}} placeholder="Engine size..."
-                                   onChangeText={(text) => this.setState({engineSize: text})}/>
-                    </View>
-                    <Button onPress={() => {
-                        this.save();
-                        goBack();
-                    }
-                    } title="Add car" style={styles.saveButton}/>
+            <View>
+                <View>
+                    <TextInput placeholder="Brand name..."
+                               onChangeText={(text) => this.setState({brandName: text})}/>
+                    <TextInput placeholder="Model name..."
+                               onChangeText={(text) => this.setState({modelName: text})}/>
+                    <TextInput placeholder="Image URL..."
+                               onChangeText={(text) => this.setState({imageUrl: text})}/>
+                    <TextInput style={{textAlign: 'center', paddingBottom: 15}}
+                               placeholder="Engine size..."
+                               onChangeText={(text) => this.setState({engineSize: text})}/>
                 </View>
-            </ScrollView>
+                <Button onPress={() => {
+                    this.save();
+                    goBack();
+                }
+                } title="Add car" style={styles.saveButton}/>
+            </View>
         );
     }
 }
@@ -49,6 +49,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     inputContainer: {
+        flex: 1,
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -62,6 +64,9 @@ const styles = StyleSheet.create({
         paddingTop: 20
     },
     carTitle: {
+        flex: 1,
+        flexDirection: 'row',
+        borderWidth: 1,
         color: '#5b88e9',
         fontSize: 25,
         textAlign: 'center'

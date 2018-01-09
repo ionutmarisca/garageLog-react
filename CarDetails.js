@@ -6,11 +6,11 @@ export class CarDetails extends React.Component {
     updateCar(key) {
         const items = firebaseApp.database().ref().child('cars');
 
-        if(this.state.brandNameChange)
+        if (this.state.brandNameChange)
             items.child(key).child("car").child("brandName").set(this.state.brandName);
-        if(this.state.modelNameChange)
+        if (this.state.modelNameChange)
             items.child(key).child("car").child("modelName").set(this.state.modelName);
-        if(this.state.engineSizeChange)
+        if (this.state.engineSizeChange)
             items.child(key).child("car").child("engineSize").set(this.state.engineSize);
     }
 
@@ -22,11 +22,20 @@ export class CarDetails extends React.Component {
             <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.inputContainer}>
-                        <TextInput style={styles.carTitle} onChangeText={(text) => {this.setState({brandName: text}); this.setState({brandNameChange: true});}}>{params.car.brandName} </TextInput>
-                        <TextInput style={{width: 150, textAlign: 'center'}} onChangeText={(text) => {this.setState({modelName: text}); this.setState({modelNameChange: true});}}> {params.car.modelName} </TextInput>
+                        <TextInput style={styles.carTitle} onChangeText={(text) => {
+                            this.setState({brandName: text});
+                            this.setState({brandNameChange: true});
+                        }}>{params.car.brandName} </TextInput>
+                        <TextInput style={{width: 150, textAlign: 'center'}} onChangeText={(text) => {
+                            this.setState({modelName: text});
+                            this.setState({modelNameChange: true});
+                        }}> {params.car.modelName} </TextInput>
                         <Image style={styles.logoImage} source={params.car.imageResource}/>
                         <TextInput
-                            style={{textAlign: 'center', paddingBottom: 15}} onChangeText={(text) => {this.setState({engineSize: text}); this.setState({engineSizeChange: true});}}> {params.car.engineSize} </TextInput>
+                            style={{textAlign: 'center', paddingBottom: 15}} onChangeText={(text) => {
+                            this.setState({engineSize: text});
+                            this.setState({engineSizeChange: true});
+                        }}> {params.car.engineSize} </TextInput>
                     </View>
                     <Button onPress={() => {
                         this.updateCar(params.key);

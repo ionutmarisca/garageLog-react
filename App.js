@@ -14,7 +14,6 @@ import {
     Text,
     View,
     FlatList,
-    ScrollView,
     Image,
     TextInput,
     Button,
@@ -49,37 +48,44 @@ export class MainApp extends Component {
         this.state = {feedback: '', carlist: [], loading: true, user: null};
 
         cars = [
-            {car: {
-                key: '1',
-                brandName: 'Audi',
-                modelName: 'A4',
-                engineSize: '1998',
-                imageResource: require('./img/audi.png')
-            }},
-            {car: {
-                key: '2',
-                brandName: 'BMW',
-                modelName: '3 Series',
-                engineSize: '1998',
-                imageResource: require('./img/bmw.png')
-            }},
-            {car: {
-                key: '3',
-                brandName: 'Mercedes',
-                modelName: 'C-Klasse',
-                engineSize: '2459',
-                imageResource: require('./img/mercedes.png')
-            }}
+            {
+                car: {
+                    key: '1',
+                    brandName: 'Audi',
+                    modelName: 'A4',
+                    engineSize: '1998',
+                    imageResource: require('./img/audi.png')
+                }
+            },
+            {
+                car: {
+                    key: '2',
+                    brandName: 'BMW',
+                    modelName: '3 Series',
+                    engineSize: '1998',
+                    imageResource: require('./img/bmw.png')
+                }
+            },
+            {
+                car: {
+                    key: '3',
+                    brandName: 'Mercedes',
+                    modelName: 'C-Klasse',
+                    engineSize: '2459',
+                    imageResource: require('./img/mercedes.png')
+                }
+            }
         ];
         console.log("Here are the cars: " + cars);
 
         this.items = this.getReference().child('cars');
+        //FOR INITIAL DOMAIN UPLOAD
         // this.items.push(cars[0]);
         // this.items.push(cars[1]);
         // this.items.push(cars[2]);
     }
 
-    getItems(items){
+    getItems(items) {
         items.on('value', (snap) => {
             var items = [];
             snap.forEach((child) => {
@@ -107,7 +113,7 @@ export class MainApp extends Component {
         });
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.getItems(this.items);
         if (this.unsubscriber) {
             this.unsubscriber();
@@ -118,17 +124,27 @@ export class MainApp extends Component {
         return firebaseApp.database().ref();
     }
 
-    deleteCar(key){
+    deleteCar(key) {
         this.items.child(key).remove();
     }
 
-    showAlert(title,key){
-        Alert.alert('Confirmation','Are you sure you want to delete this car?',
+    logout() {
+        firebase.auth().signOut()
+            .then(() => {
+                this.setState({user: null});
+            });
+    }
+
+    showAlert(title, key) {
+        Alert.alert('Confirmation', 'Are you sure you want to delete this car?',
             [
-                {text: 'Yes',
-                    onPress: () =>{
+                {
+                    title: title,
+                    text: 'Yes',
+                    onPress: () => {
                         this.deleteCar(key);
-                    }},
+                    }
+                },
                 {text: 'No'}
             ],
             {cancelable: false}
@@ -153,26 +169,26 @@ export class MainApp extends Component {
                     data={this.state.carlist}
                     renderItem={
                         ({item}) =>
-                            <ScrollView style={styles.scrollContainer}>
-                                <View style={styles.linearView}>
-                                    <Image style={{height: 50, width: 50, resizeMode: 'contain'}}
-                                                                               source={item.car.imageResource}/>
-                                    <Text style={styles.item} onPress={
-                                        () => navigate('CarDetails', {car: item.car, key: item.key})
-                                    }>{item.car.brandName} {item.car.modelName}</Text>
-                                    <View style={styles.deleteView}>
-                                        <Button style={styles.deleteButton}
-                                                onPress={ () => { this.showAlert(item.car.brandName + item.car.modelName, item.key);}}
-                                                title = "Delete">
-                                        </Button>
-                                    </View>
+                            <View style={styles.linearView}>
+                                <Image style={{height: 50, width: 50, resizeMode: 'contain'}}
+                                       source={item.car.imageResource}/>
+                                <Text style={styles.item} onPress={
+                                    () => navigate('CarDetails', {car: item.car, key: item.key})
+                                }>{item.car.brandName} {item.car.modelName}</Text>
+                                <View style={styles.deleteView}>
+                                    <Button style={styles.deleteButton}
+                                            onPress={() => {
+                                                this.showAlert(item.car.brandName + item.car.modelName, item.key);
+                                            }}
+                                            title="Delete">
+                                    </Button>
                                 </View>
-                            </ScrollView>
+                            </View>
                     }
                 />
 
                 <View style={styles.container}>
-                    <View style={styles.oneLineTextContainer}>
+                    <View>
                         <TextInput
                             style={styles.textBoxSmall}
                             placeholder="Feedback..."
@@ -191,6 +207,11 @@ export class MainApp extends Component {
                         navigate('AddCar');
                     }
                     } title="Add car" style={styles.saveButton}/>
+
+                    <Button onPress={() => {
+                        this.logout();
+                    }
+                    } title="Logout" style={styles.saveButton}/>
                 </View>
             </View>
         );
@@ -244,7 +265,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'blue',
         paddingTop: 20
     },
-    deleteView:{
+    deleteView: {
         flex: 1, flexDirection: 'row', justifyContent: 'flex-end'
     }
 });
